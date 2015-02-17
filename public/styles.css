@@ -1,0 +1,51 @@
+html {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #06262C;
+  color: white;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+header {
+  height: 50px;
+  position: relative;
+}
+
+h1 {
+  margin: 0;
+}
+
+.highlight {
+  color: #FAA137;
+}
+
+.github-logo {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+}
+
+.spinning {
+  -webkit-animation-name: spin;
+  -webkit-animation-duration: 1500ms;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+.pull-request {
+  margin: 30px;
+}
