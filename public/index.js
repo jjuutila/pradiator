@@ -25,7 +25,7 @@ function pullRequestsToHtml(pr) {
   return $('<div>', {class: 'pull-request'})
     .append($('<span>', {class: 'repository', text: pr.repository}))
     .append($('<span>', {class: 'pr-title', text: pr.title}))
-    .append($('<div>', {class: 'repository', text: getMetaText(pr)}));
+    .append($('<div>', {class: 'meta', text: getMetaText(pr)}));
 }
 
 function getMetaText(pr) {
