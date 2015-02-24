@@ -14,7 +14,7 @@ body {
 }
 
 header {
-  height: 50px;
+  height: 40px;
   position: relative;
 }
 
@@ -47,5 +47,15 @@ h1 {
 }
 
 .pull-request {
-  margin: 30px;
+  margin: 1.9em;
+  font-size: 2.1em;
+}
+
+.repository {
+  display: inline-block;
+  margin-right: 0.5em;
+}
+
+.meta {
+  font-size: 0.8em;
 }
