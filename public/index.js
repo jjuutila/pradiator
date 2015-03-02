@@ -9,7 +9,7 @@ var initialApiResponses = configProp.flatMap(getPullRequestsForRepositories);
 var pollRequestStarts = configProp.sampledBy(initialApiResponses.merge(responseFeedbackBus).debounce(30000));
 var pollApiResponses = pollRequestStarts.flatMap(getPullRequestsForRepositories);
 
-responseFeedbackBus.plug(pollApiResponses);
+responseFeedbackBus.plug(pollApiResponses.flatMap(alwaysTrue));
 
 var apiResponses = initialApiResponses.merge(pollApiResponses);
 apiResponses.onValue(showResults);
@@ -30,6 +30,10 @@ function pullRequestsToHtml(pr) {
 
 function getMetaText(pr) {
   return '#' + pr.number + ' opened ' + moment(pr.created_at).fromNow() + ' by ' + pr.user.login;
+}
+
+function alwaysTrue() {
+  return true;
 }
 
 function setSpinning(isSpinning) {
