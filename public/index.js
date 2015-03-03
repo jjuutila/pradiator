@@ -86,6 +86,7 @@ function getPullRequest(accessToken, repository) {
       headers: {
         Authorization: 'token ' + accessToken
       },
-      dataType: 'json'
+      dataType: 'json',
+      timeout: 10000
     });
 }
