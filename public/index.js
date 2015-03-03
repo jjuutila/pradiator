@@ -9,7 +9,7 @@ var initialApiResponses = configProp.flatMap(getPullRequestsForRepositories);
 var pollRequestStarts = configProp.sampledBy(initialApiResponses.merge(responseFeedbackBus).debounce(30000));
 var pollApiResponses = pollRequestStarts.flatMap(getPullRequestsForRepositories);
 
-responseFeedbackBus.plug(pollApiResponses.flatMap(alwaysTrue));
+responseFeedbackBus.plug(pollApiResponses.flatMapError(alwaysTrue));
 
 var apiResponses = initialApiResponses.merge(pollApiResponses);
 apiResponses.onValue(showResults);
