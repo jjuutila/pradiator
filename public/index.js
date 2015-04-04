@@ -1,4 +1,4 @@
-var createResultHtml = R.pipe(R.flatten, R.sort(compareDate), R.map(pullRequestsToHtml));
+var createPullRequestListHtml = R.pipe(R.filter(isOpen), R.sort(compareDate), R.map(pullRequestsToHtml));
 
 var responseFeedbackBus = new Bacon.Bus();
 
@@ -16,6 +16,14 @@ apiResponses.onValue(showResults);
 apiResponses.onError(showError);
 
 pollRequestStarts.onValue(setSpinning, true);
+
+function isOpen(pr) {
+  return pr.state === 'open';
+}
+
+function mergedOnly(pr) {
+  return pr.state === 'closed' && pr.merged_at;
+}
 
 function compareDate(a, b) {
   return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -44,9 +52,33 @@ function setSpinning(isSpinning) {
   }
 }
 
+function prDuration(pr) {
+  var res = new Date(pr.merged_at).getTime() - new Date(pr.created_at).getTime();
+  return res;
+}
+
+var getPrMergeDurations = R.pipe(R.filter(mergedOnly), R.map(prDuration));
+
+function calculateAverageDuration(durations) {
+  return R.sum(durations) / durations.length;
+}
+
+function averageDurationToHtml(averageDurationInMs) {
+  var text = 'Average time took to merge a pull request: ' +
+    Math.floor(moment.duration(averageDurationInMs).as('hours')) +
+    ' hours';
+
+  return $('<div>').text(text);
+}
+
 function showResults(results) {
-  var html = createResultHtml(results);
-  $('#result-container').html(html);
+  var durations = getPrMergeDurations(results);
+  var statisticsHtml = averageDurationToHtml(calculateAverageDuration(durations));
+  $('#statistics').html(statisticsHtml);
+
+  var pullRequestHtml = createPullRequestListHtml(results);
+  $('#pull-requests').html(pullRequestHtml);
+
   setSpinning(false);
 }
 
@@ -71,6 +103,7 @@ function getConfig() {
 
 function getPullRequestsForRepositories(config) {
   return Bacon.combineAsArray(config.repositories.map(R.partial(toRequestStream, config.accessToken)))
+    .map(R.flatten)
     .toEventStream();
 }
 
@@ -81,7 +114,7 @@ function toRequestStream(accessToken, repository) {
 
 function getPullRequest(accessToken, repository) {
     return $.ajax({
-      url: 'https://api.github.com/repos/' + repository + '/pulls',
+      url: 'https://api.github.com/repos/' + repository + '/pulls?state=all',
       type: 'GET',
       headers: {
         Authorization: 'token ' + accessToken
