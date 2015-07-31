@@ -2,6 +2,10 @@
   "name": "PRadiator.",
   "version": "0.0.1",
   "description": "Shows open PRs from multiple repositories.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jjuutila/pradiator.git"
+  },
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
