@@ -32,7 +32,7 @@ function compareDate(a, b) {
 function pullRequestsToHtml(pr) {
   return $('<div>', {class: 'pull-request'})
     .append($('<span>', {class: 'repository', text: pr.repository}))
-    .append($('<span>', {class: 'pr-title', text: pr.title}))
+    .append($('<a>', {class: 'pr-title', href: pr.html_url, target: '_blank', text: pr.title}))
     .append($('<div>', {class: 'meta', text: getMetaText(pr)}));
 }
 
