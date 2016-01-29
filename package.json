@@ -11,11 +11,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "radiator", "pull request"
+    "radiator",
+    "pull request"
   ],
   "author": "Jaakko Juutila",
   "license": "MIT",
   "dependencies": {
-    "node-static": "0.7.6"
+    "express": "4.13.4",
   }
 }
