@@ -11,7 +11,7 @@ var app = express();
 app.use(express.static('public'));
 
 // read in the config file
-var config = JSON.parse(fs.readFileSync(path.resolve('./config.json'), 'utf-8'));
+var config = require('./config.json');
 
 if ((!config.accessToken) || (config.accessToken === '')) {
     throw new Error("No 'accessToken' supplied in config.json!");
