@@ -2,7 +2,7 @@ var createPullRequestListHtml = R.pipe(R.filter(isOpen), R.sort(compareDate), R.
 
 var responseFeedbackBus = new Bacon.Bus();
 
-var configProp = Bacon.combineAsArray(getConfig(), getDomReadyStream())
+var configProp = Bacon.combineAsArray(getRepositoryList(), getDomReadyStream())
   .map(R.prop(0));
 
 var initialApiResponses = configProp.flatMap(getPullRequestsForRepositories);
@@ -93,32 +93,29 @@ function getDomReadyStream() {
   });
 }
 
-function getConfig() {
+function getRepositoryList() {
     return Bacon.fromPromise($.ajax({
-      url: 'config.json',
+      url: 'repositories',
       type: 'GET',
       dataType: 'json'
     }));
 }
 
-function getPullRequestsForRepositories(config) {
-  return Bacon.combineAsArray(config.repositories.map(R.partial(toRequestStream, config.accessToken)))
+function getPullRequestsForRepositories(repositories) {
+  return Bacon.combineAsArray(repositories.map(toRequestStream))
     .map(R.flatten)
     .toEventStream();
 }
 
-function toRequestStream(accessToken, repository) {
-  return Bacon.fromPromise(getPullRequest(accessToken, repository))
+function toRequestStream(repository) {
+  return Bacon.fromPromise(getPullRequests(repository))
     .map(R.map(R.merge({repository: repository})));
 }
 
-function getPullRequest(accessToken, repository) {
+function getPullRequests(repository) {
     return $.ajax({
-      url: 'https://api.github.com/repos/' + repository + '/pulls?state=all',
+      url: '/prs/' + repository,
       type: 'GET',
-      headers: {
-        Authorization: 'token ' + accessToken
-      },
       dataType: 'json',
       timeout: 10000
     });
