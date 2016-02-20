@@ -1,21 +1,12 @@
 var createPullRequestListHtml = R.pipe(R.filter(isOpen), R.sort(compareDate), R.map(pullRequestsToHtml));
 
-var responseFeedbackBus = new Bacon.Bus();
-
 var configProp = Bacon.combineAsArray(getRepositoryList(), getDomReadyStream())
   .map(R.prop(0));
 
-var initialApiResponses = configProp.flatMap(getPullRequestsForRepositories);
-var pollRequestStarts = configProp.sampledBy(initialApiResponses.merge(responseFeedbackBus).debounce(30000));
-var pollApiResponses = pollRequestStarts.flatMap(getPullRequestsForRepositories);
+var apiResponses = configProp.flatMap(getPullRequestsForRepositories);
 
-responseFeedbackBus.plug(pollApiResponses.flatMapError(alwaysTrue));
-
-var apiResponses = initialApiResponses.merge(pollApiResponses);
 apiResponses.onValue(showResults);
 apiResponses.onError(showError);
-
-pollRequestStarts.onValue(setSpinning, true);
 
 function isOpen(pr) {
   return pr.state === 'open';
@@ -38,10 +29,6 @@ function pullRequestsToHtml(pr) {
 
 function getMetaText(pr) {
   return '#' + pr.number + ' opened ' + moment(pr.created_at).fromNow() + ' by ' + pr.user.login;
-}
-
-function alwaysTrue() {
-  return true;
 }
 
 function setSpinning(isSpinning) {
@@ -88,6 +75,7 @@ function showError(error) {
 }
 
 function getDomReadyStream() {
+  setSpinning(true);
   return Bacon.fromCallback(function(callback) {
     $(document).ready(callback);
   });
