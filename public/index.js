@@ -1,4 +1,4 @@
-var createPullRequestListHtml = R.pipe(R.filter(isOpen), R.sort(compareDate), R.map(pullRequestsToHtml));
+var createPullRequestListHtml = R.pipe(R.sort(compareDate), R.map(pullRequestsToHtml));
 
 var configProp = Bacon.combineAsArray(getRepositoryList(), getDomReadyStream())
   .map(R.prop(0));
@@ -7,14 +7,6 @@ var apiResponses = configProp.flatMap(getPullRequestsForRepositories);
 
 apiResponses.onValue(showResults);
 apiResponses.onError(showError);
-
-function isOpen(pr) {
-  return pr.state === 'open';
-}
-
-function mergedOnly(pr) {
-  return pr.state === 'closed' && pr.merged_at;
-}
 
 function compareDate(a, b) {
   return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -39,30 +31,7 @@ function setSpinning(isSpinning) {
   }
 }
 
-function prDuration(pr) {
-  var res = new Date(pr.merged_at).getTime() - new Date(pr.created_at).getTime();
-  return res;
-}
-
-var getPrMergeDurations = R.pipe(R.filter(mergedOnly), R.map(prDuration));
-
-function calculateAverageDuration(durations) {
-  return R.sum(durations) / durations.length;
-}
-
-function averageDurationToHtml(averageDurationInMs) {
-  var text = 'Average time took to merge a pull request: ' +
-    Math.floor(moment.duration(averageDurationInMs).as('hours')) +
-    ' hours';
-
-  return $('<div>').text(text);
-}
-
 function showResults(results) {
-  var durations = getPrMergeDurations(results);
-  var statisticsHtml = averageDurationToHtml(calculateAverageDuration(durations));
-  $('#statistics').html(statisticsHtml);
-
   var pullRequestHtml = createPullRequestListHtml(results);
   $('#pull-requests').html(pullRequestHtml);
 

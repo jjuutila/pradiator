@@ -47,11 +47,6 @@ h1 {
     to { transform: rotate(360deg); }
 }
 
-#pull-requests {
-  width: 67%;
-  float: left;
-}
-
 .pull-request {
   margin: 0 1.9em 1.9em 1.9em;
   font-size: 2.1em;
@@ -64,11 +59,4 @@ h1 {
 
 .meta {
   font-size: 0.8em;
-}
-
-#statistics {
-  width: 33%;
-  float: left;
-  padding-left: 30px;
-  font-size: 1.5em;
 }
