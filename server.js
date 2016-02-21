@@ -1,4 +1,4 @@
-var express = require('express')
+var express = require('express');
 var https = require('https');
 var path = require('path');
 var fs = require('fs');
@@ -46,7 +46,7 @@ app.get('/prs/:owner/:repo', function(req, res) {
             'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)',
             'Accept': 'application/vnd.github.v3+json'
         }
-    }
+    };
 
     function cb(response) {
         var str = '';
@@ -62,7 +62,7 @@ app.get('/prs/:owner/:repo', function(req, res) {
                 // send it back in the response
                 res.status(200).json(JSON.parse(str));
             } catch(e) {
-                console.sendStatus(500);
+                res.sendStatus(500);
             }
         });
     }
@@ -73,4 +73,3 @@ app.get('/prs/:owner/:repo', function(req, res) {
 app.listen(PORT, function() {
     console.log('pradiator server started at http://localhost:' + PORT + '/');
 });
-
