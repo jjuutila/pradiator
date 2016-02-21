@@ -17,4 +17,4 @@ Example config file:
 ```
 
 # Running
-`$ node server.js`
+`$ npm start`
