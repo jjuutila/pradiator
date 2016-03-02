@@ -3,7 +3,7 @@ var https = require('https');
 var path = require('path');
 var fs = require('fs');
 
-var PORT = 8888;
+var DEFAULT_PORT = 8787;
 
 var app = express();
 
@@ -16,6 +16,8 @@ var config = require('./config.json');
 if ((!config.accessToken) || (config.accessToken === '')) {
     throw new Error("No 'accessToken' supplied in config.json!");
 }
+
+var port = config.port || DEFAULT_PORT;
 
 // gets the configured list of repositories
 //
@@ -71,6 +73,6 @@ app.get('/prs/:owner/:repo', function(req, res) {
 });
 
 app.listen(PORT, function() {
-    console.log('pradiator server started at http://localhost:' + PORT + '/');
+    console.log('pradiator server started at http://localhost:' + port + '/');
 });
 
