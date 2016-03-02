@@ -3,7 +3,7 @@ var https = require('https');
 var path = require('path');
 var fs = require('fs');
 
-var DefaultPort = 8787;
+var DEFAULT_PORT = 8787;
 
 var app = express();
 
@@ -17,7 +17,7 @@ if ((!config.accessToken) || (config.accessToken === '')) {
     throw new Error("No 'accessToken' supplied in config.json!");
 }
 
-var port = config.port || DefaultPort;
+var port = config.port || DEFAULT_PORT;
 
 // gets the configured list of repositories
 //
