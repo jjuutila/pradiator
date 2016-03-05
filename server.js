@@ -72,7 +72,7 @@ app.get('/prs/:owner/:repo', function(req, res) {
     https.request(opts, cb).end();
 });
 
-app.listen(PORT, function() {
+app.listen(port, function() {
     console.log('pradiator server started at http://localhost:' + port + '/');
 });
 
