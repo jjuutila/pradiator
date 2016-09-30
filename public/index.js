@@ -1,9 +1,7 @@
 var createPullRequestListHtml = R.pipe(R.sort(compareDate), R.map(pullRequestsToHtml));
 
-var configProp = Bacon.combineAsArray(getRepositoryList(), getDomReadyStream())
+var apiResponses = Bacon.combineAsArray(getPullRequests(), getDomReadyStream())
   .map(R.prop(0));
-
-var apiResponses = configProp.flatMap(getPullRequestsForRepositories);
 
 apiResponses.onValue(showResults);
 apiResponses.onError(showError);
@@ -50,30 +48,11 @@ function getDomReadyStream() {
   });
 }
 
-function getRepositoryList() {
+function getPullRequests() {
     return Bacon.fromPromise($.ajax({
-      url: 'repositories',
-      type: 'GET',
-      dataType: 'json'
+        url: '/prs/',
+        type: 'GET',
+        dataType: 'json',
+        timeout: 10000
     }));
-}
-
-function getPullRequestsForRepositories(repositories) {
-  return Bacon.combineAsArray(repositories.map(toRequestStream))
-    .map(R.flatten)
-    .toEventStream();
-}
-
-function toRequestStream(repository) {
-  return Bacon.fromPromise(getPullRequests(repository))
-    .map(R.map(R.merge({repository: repository})));
-}
-
-function getPullRequests(repository) {
-    return $.ajax({
-      url: '/prs/' + repository,
-      type: 'GET',
-      dataType: 'json',
-      timeout: 10000
-    });
 }
