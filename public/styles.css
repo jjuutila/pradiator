@@ -23,6 +23,10 @@ h1 {
   margin: 0;
 }
 
+.highlight {
+  color: #FAA137;
+}
+
 .github-logo {
   position: absolute;
   right: 20px;
