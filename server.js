@@ -1,7 +1,5 @@
 var express = require('express');
 var https = require('https');
-var path = require('path');
-var fs = require('fs');
 
 var DEFAULT_PORT = 8787;
 
