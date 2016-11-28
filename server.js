@@ -1,7 +1,6 @@
 var express = require('express');
 const rp = require('request-promise');
 const Promise = require('bluebird');
-const R = require('ramda');
 
 var DEFAULT_PORT = 8787;
 
@@ -20,16 +19,16 @@ if ((!config.accessToken) || (config.accessToken === '')) {
 var port = config.port || DEFAULT_PORT;
 
 app.get('/prs', function getPrs(req, res) {
-    const getPrsRequests = config.repositories.map(getPullRequestsFromGithub);
-    Promise.all(getPrsRequests)
-        .then((pullRequests) => res.status(200).json(R.flatten(pullRequests)))
+    const getPrsRequests = config.repositories.reduce(getPullRequestsFromGithub, {});
+    Promise.props(getPrsRequests)
+        .then((pullRequests) => res.status(200).json(pullRequests))
         .catch((err) => {
-            console.error('Github API error', err.statusCode, err.error);
+            console.error('Github API error', err);
             res.status(500).end();
         });
 });
 
-function getPullRequestsFromGithub(repository) {
+function getPullRequestsFromGithub(acc, repository) {
     const options = {
         method: 'GET',
         uri: `https://api.github.com/repos/${repository}/pulls`,
@@ -41,7 +40,8 @@ function getPullRequestsFromGithub(repository) {
         json: true,
     };
 
-    return rp(options);
+    acc[repository] = rp(options);
+    return acc;
 }
 
 app.listen(port, function() {

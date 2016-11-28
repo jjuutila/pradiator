@@ -16,7 +16,7 @@ body {
 header {
   height: 40px;
   position: relative;
-  margin-bottom: 35px;
+  margin-bottom: 30px;
 }
 
 h1 {
@@ -29,8 +29,8 @@ h1 {
 
 .github-logo {
   position: absolute;
-  right: 20px;
-  top: 20px;
+  right: 10px;
+  top: 10px;
   width: 40px;
   height: 40px;
 }
@@ -47,14 +47,42 @@ h1 {
     to { transform: rotate(360deg); }
 }
 
-.pull-request {
-  margin: 0 1.9em 1.9em 1.9em;
-  font-size: 2.1em;
+#result-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .repository {
-  display: inline-block;
-  margin-right: 0.5em;
+    border: 1px solid white;
+    font-size: 2.1em;
+    margin: 10px 0 0 10px;
+    padding: 10px;
+    width: 300px;
+    height: 225px;
+    display: flex;
+    flex-direction: column;
+}
+
+.outdated {
+    background-color: #ec2c2c;
+}
+
+.team-name {
+    font-size: 0.65em;
+    color: rgba(255, 255, 255, 0.57);
+}
+
+.repository-name {
+    margin-bottom: auto;
+}
+
+.pr-count {
+    font-size: 2.5em;
+    font-weight: bold;
+    text-align: center;
+    align-self: flex-end;
+    width: 100%;
 }
 
 a.pr-title {
