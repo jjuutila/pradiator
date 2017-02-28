@@ -1,8 +1,16 @@
 (function () {
     'use strict';
 
-    var apiResponses = Bacon.combineAsArray(getPullRequests(), getDomReadyStream())
-        .map(R.prop(0));
+    var responseFeedbackBus = new Bacon.Bus();
+    var pollingIntervalInMs = 60000;
+    var requestStarts = getDomReadyStream()
+        .merge(responseFeedbackBus.debounce(pollingIntervalInMs));
+
+    requestStarts.map(R.always(true)).onValue(setSpinning);
+
+    var apiResponses = requestStarts.flatMap(getPullRequests);
+
+    responseFeedbackBus.plug(apiResponses.flatMap(R.always(true)));
 
     apiResponses.onValue(showResults);
     apiResponses.onError(showError);
