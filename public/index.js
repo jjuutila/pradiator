@@ -1,6 +1,7 @@
 (function () {
     'use strict';
 
+    const getOrderedRepositoryNameList = R.pipe(R.keys, R.sortBy(R.toLower));
     var responseFeedbackBus = new Bacon.Bus();
     var pollingIntervalInMs = 60000;
     var requestStarts = getDomReadyStream()
@@ -31,7 +32,7 @@
     }
 
     function createPullRequestListHtml(results) {
-        return R.map(createRepositoryElement, R.keys(results));
+        return R.map(createRepositoryElement, getOrderedRepositoryNameList(results));
 
         function createRepositoryElement(fullRepoName) {
             const [teamName, repoName] = fullRepoName.split('/');
